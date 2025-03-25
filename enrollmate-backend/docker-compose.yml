@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  enrollmate-course:
+    build:
+      context: ./enrollmate-course
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - "8081:8081"
+    networks:
+      - enrollmate-network
+
+  enrollmate-students:
+    build:
+      context: ./enrollmate-students
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - "8082:8082"
+    networks:
+      - enrollmate-network
+
+  postgres:
+    build: .
+    image: postgres
+    container_name: postgresdb
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: enrollmate
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: enrollmate
+    networks:
+      - enrollmate-network
+
+networks:
+  enrollmate-network:
+    driver: bridge
